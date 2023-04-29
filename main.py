@@ -5,13 +5,14 @@
 import pygame
 
 
-FPS = 60
+FPS = 24
+SCREEN_SIZE = (640, 480)
 
 
 def run():  	
     pygame.init()
 
-    screen = pygame.display.set_mode((400,600))
+    screen = pygame.display.set_mode(SCREEN_SIZE)
     clock = pygame.time.Clock()
 
     running = True
@@ -29,16 +30,16 @@ def run_frame(screen, clock):
             return False
 
     screen.fill((255, 255, 255))
+    cell_size = (100, 100)
+    margin = 4
+    offset = ((float(SCREEN_SIZE[0]) / 2) - (cell_size[0] * 3 + margin * 2) / 2,
+              (float(SCREEN_SIZE[1]) / 2) - (cell_size[1] * 3 + margin * 2) / 2)
     
-    offset = (50, 50)
-    cell_size = (20, 20)
-    margin = 3
     for i in range(3):
         for j in range(3):
-            rect = pygame.Rect(
-                (offset[0] + j * (cell_size[0] + margin),
-                 offset[1] + i * (cell_size[1] + margin)),
-                cell_size)
+            rect = pygame.Rect((offset[0] + j * (cell_size[0] + margin),
+                                offset[1] + i * (cell_size[1] + margin)),
+                               cell_size)
             pygame.draw.rect(screen, "red", rect)
 
     # pygame.draw.circle(screen,
