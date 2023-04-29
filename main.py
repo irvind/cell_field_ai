@@ -27,12 +27,24 @@ def run_frame(screen, clock):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False
-        
+
     screen.fill((255, 255, 255))
-    pygame.draw.circle(screen,
-                       "red",
-                       pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2),
-                       40)
+    
+    offset = (50, 50)
+    cell_size = (20, 20)
+    margin = 3
+    for i in range(3):
+        for j in range(3):
+            rect = pygame.Rect(
+                (offset[0] + j * (cell_size[0] + margin),
+                 offset[1] + i * (cell_size[1] + margin)),
+                cell_size)
+            pygame.draw.rect(screen, "red", rect)
+
+    # pygame.draw.circle(screen,
+    #                    "red",
+    #                    pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2),
+    #                    40)
 
     pygame.display.flip()
     clock.tick(FPS)
