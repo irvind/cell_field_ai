@@ -5,7 +5,7 @@
 import pygame
 
 from cell_field import CellField
-
+from nn import FeedForwardNetwork
 
 FPS = 24
 SCREEN_SIZE = (640, 480)
@@ -40,11 +40,6 @@ def run_frame(screen, clock):
     offset = ((float(SCREEN_SIZE[0]) / 2) - (field.cell_size[0] * 3 + field.margin * 2) / 2,
               (float(SCREEN_SIZE[1]) / 2) - (field.cell_size[1] * 3 + field.margin * 2) / 2)
     field.draw(screen, offset)
-
-    # pygame.draw.circle(screen,
-    #                    "red",
-    #                    pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2),
-    #                    40)
 
     pygame.display.flip()
     clock.tick(FPS)
