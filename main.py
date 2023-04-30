@@ -4,6 +4,8 @@
 # https://stackoverflow.com/questions/20842801/how-to-display-text-in-pygame
 import pygame
 
+from cell_field import CellField
+
 
 FPS = 24
 SCREEN_SIZE = (640, 480)
@@ -11,6 +13,7 @@ SCREEN_SIZE = (640, 480)
 
 def run():  	
     pygame.init()
+    pygame.freetype.init()
 
     screen = pygame.display.set_mode(SCREEN_SIZE)
     clock = pygame.time.Clock()
@@ -21,6 +24,8 @@ def run():
         if not _continue:
             break
 
+    # print(pygame.font.get_fonts())
+
     pygame.quit()
 
 
@@ -30,17 +35,11 @@ def run_frame(screen, clock):
             return False
 
     screen.fill((255, 255, 255))
-    cell_size = (100, 100)
-    margin = 4
-    offset = ((float(SCREEN_SIZE[0]) / 2) - (cell_size[0] * 3 + margin * 2) / 2,
-              (float(SCREEN_SIZE[1]) / 2) - (cell_size[1] * 3 + margin * 2) / 2)
-    
-    for i in range(3):
-        for j in range(3):
-            rect = pygame.Rect((offset[0] + j * (cell_size[0] + margin),
-                                offset[1] + i * (cell_size[1] + margin)),
-                               cell_size)
-            pygame.draw.rect(screen, "red", rect)
+
+    field = CellField()
+    offset = ((float(SCREEN_SIZE[0]) / 2) - (field.cell_size[0] * 3 + field.margin * 2) / 2,
+              (float(SCREEN_SIZE[1]) / 2) - (field.cell_size[1] * 3 + field.margin * 2) / 2)
+    field.draw(screen, offset)
 
     # pygame.draw.circle(screen,
     #                    "red",
