@@ -2,6 +2,7 @@
 # https://www.pygame.org/docs/
 # https://pythonru.com/uroki/biblioteka-pygame-chast-1-vvedenie
 # https://stackoverflow.com/questions/20842801/how-to-display-text-in-pygame
+import numpy as np
 import pygame
 
 from cell_field import CellField
@@ -11,7 +12,7 @@ FPS = 24
 SCREEN_SIZE = (640, 480)
 
 
-def run():  	
+def run():
     pygame.init()
     pygame.freetype.init()
 
