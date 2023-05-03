@@ -1,4 +1,6 @@
+import numpy as np
 import pygame
+from nn import FeedForwardNetwork
 
 
 class CellField:
@@ -10,6 +12,9 @@ class CellField:
         self.zero_color = zero_color
         self.nonzero_color = nonzero_color
         self.font = pygame.freetype.SysFont('freeserif', 100)
+        self.network = FeedForwardNetwork(input_num=9,
+                                          hidden_layer_nums=[20, 12],
+                                          output_num=9)
         
     def draw(self, surface, offset):
         for i in range(3):
@@ -24,3 +29,13 @@ class CellField:
                 text_offset = (cell_offset[0] + 30, cell_offset[1] + 15)
                 text_surface, _ = self.font.render(str(self.values[i][j]), (0, 0, 0))
                 surface.blit(text_surface, text_offset)
+
+    def increment_next_cell(self):
+        inputs = []
+        for vals in self.values:
+            inputs.extend(vals)
+        net_input = np.array([inputs])
+        net_output = self.network.feed_forward(net_input)
+
+        picked_cell = np.argmax(net_output)
+        self.values[picked_cell//3][picked_cell%3] += 1
