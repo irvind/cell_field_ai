@@ -11,11 +11,12 @@ class CellField:
         self.margin = margin
         self.zero_color = zero_color
         self.nonzero_color = nonzero_color
+        self.fitness_ = None
         self.font = pygame.freetype.SysFont('freeserif', 100)
         self.network = FeedForwardNetwork(input_num=9,
                                           hidden_layer_nums=[20, 12],
                                           output_num=9)
-        
+
     def draw(self, surface, offset):
         for i in range(3):
             for j in range(3):
@@ -39,3 +40,15 @@ class CellField:
 
         picked_cell = np.argmax(net_output)
         self.values[picked_cell//3][picked_cell%3] += 1
+
+    def calc_fitness(self):
+        if self.fitness_ is not None:
+            return self.fitness_
+
+        vals = np.array(self.values).flatten()
+        null_indices = vals == 0
+        vals = vals.astype(float)
+        vals[null_indices] = np.inf
+        self.fitness_ = (1 / vals).sum()
+
+        return self.fitness_
