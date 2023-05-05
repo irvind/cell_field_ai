@@ -62,4 +62,4 @@ class CellField:
 
     def is_finished(self) -> bool:
         vals = np.array(self.values).flatten()
-        return all(vals != 0)
+        return all(vals != 0) or any(vals > 9)
