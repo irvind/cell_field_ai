@@ -1,14 +1,17 @@
+import random
+from typing import Optional
+
 import settings
 from cell_field import CellField
 from errors import EndOfPoupulation
 
 
 class Population:
-    def __init__(self):
-        self.individuals = None
+    def __init__(self, individuals: Optional[list[CellField]] = None):
+        self.individuals = individuals
 
     def spawn_initial_population(self) -> None:
-        self.individuals = [CellField() for _ in range(settings.INITIAL_POPULATION_SIZE)]
+        self.individuals = [CellField() for _ in range(settings.POPULATION_SIZE)]
 
     def __getitem__(self, key):
         return self.individuals[key]
@@ -37,12 +40,29 @@ class GeneticAlgorithm:
     def set_next_individual(self) -> None:
         if self.cur_individual_idx + 1 >= len(self.population):
             raise EndOfPoupulation()
-        
+
         self.cur_individual_idx += 1
 
-    def generate_next_population() -> None:
+    def generate_next_population(self) -> None:
+        individuals = self.population.individuals.copy()
+        random.shuffle(individuals)
+
+        extended_population_size = settings.POPULATION_SIZE + settings.OFFSPRING_NUMBER
+        while len(individuals) < extended_population_size:
+            # TODO: selection
+            # TODO: crossover
+            # TODO: mutation
+            # TODO: clip
+            new_individuals = []
+            individuals.extend(new_individuals)
+
+        individuals = self.pick_best_individuals(individuals)
+
+        self.population = Population(individuals)
+        self.phase += 1
+        self.cur_individual_idx = 0
+
+    @classmethod
+    def pick_best_individuals(cls, individuals: list[CellField]) -> list[CellField]:
         # TODO
         pass
-
-
-
