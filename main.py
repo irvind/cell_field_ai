@@ -4,19 +4,22 @@
 # https://stackoverflow.com/questions/20842801/how-to-display-text-in-pygame
 import pygame
 
+import settings
+from genetic import GeneticAlgorithm
 from cell_field import CellField
 
-FPS = 1
-SCREEN_SIZE = (640, 480)
+genetic_algo = GeneticAlgorithm()
 
 
 def run():
     pygame.init()
     pygame.freetype.init()
 
-    screen = pygame.display.set_mode(SCREEN_SIZE)
+    screen = pygame.display.set_mode(settings.SCREEN_SIZE)
     clock = pygame.time.Clock()
-    field = CellField()
+
+    genetic_algo.init()
+    field = genetic_algo.get_current_individual()
 
     running = True
     while running:
@@ -36,12 +39,13 @@ def run_frame(screen: pygame.Surface, clock: pygame.time.Clock, field: CellField
 
     screen.fill((255, 255, 255))
 
-    offset = ((float(SCREEN_SIZE[0]) / 2) - (field.cell_size[0] * 3 + field.margin * 2) / 2,
-              (float(SCREEN_SIZE[1]) / 2) - (field.cell_size[1] * 3 + field.margin * 2) / 2)
+    screen_size = settings.SCREEN_SIZE
+    offset = ((float(screen_size[0]) / 2) - (field.cell_size[0] * 3 + field.margin * 2) / 2,
+              (float(screen_size[1]) / 2) - (field.cell_size[1] * 3 + field.margin * 2) / 2)
     field.draw(screen, offset)
 
     pygame.display.flip()
-    clock.tick(FPS)
+    clock.tick(settings.FPS)
 
     field.increment_next_cell()
 
