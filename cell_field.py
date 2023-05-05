@@ -56,3 +56,10 @@ class CellField:
         self.fitness_ = (1 / vals).sum()
 
         return self.fitness_
+
+    def get_number_of_turns(self) -> int:
+        return np.array(self.values).flatten().sum()
+
+    def is_finished(self) -> bool:
+        vals = np.array(self.values).flatten()
+        return all(vals != 0)
