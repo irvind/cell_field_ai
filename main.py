@@ -29,7 +29,7 @@ def run():
     pygame.quit()
 
 
-def run_frame(screen, clock, field):
+def run_frame(screen: pygame.Surface, clock: pygame.time.Clock, field: CellField):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             return False

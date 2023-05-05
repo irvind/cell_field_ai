@@ -4,7 +4,11 @@ from nn import FeedForwardNetwork
 
 
 class CellField:
-    def __init__(self, cell_size=100, margin=4, zero_color='red', nonzero_color='green'):
+    def __init__(self,
+                 cell_size: int = 100,
+                 margin: int = 4,
+                 zero_color: str = 'red',
+                 nonzero_color: str = 'green'):
         self.values = [[0 for _ in range(3)]
                        for _ in range(3)]
         self.cell_size = (cell_size, cell_size)
@@ -17,7 +21,7 @@ class CellField:
                                           hidden_layer_nums=[20, 12],
                                           output_num=9)
 
-    def draw(self, surface, offset):
+    def draw(self, surface: pygame.Surface, offset: tuple[int, int]) -> None:
         for i in range(3):
             for j in range(3):
                 cell_offset = (offset[0] + j * (self.cell_size[0] + self.margin),
@@ -31,7 +35,7 @@ class CellField:
                 text_surface, _ = self.font.render(str(self.values[i][j]), (0, 0, 0))
                 surface.blit(text_surface, text_offset)
 
-    def increment_next_cell(self):
+    def increment_next_cell(self) -> None:
         inputs = []
         for vals in self.values:
             inputs.extend(vals)
@@ -41,7 +45,7 @@ class CellField:
         picked_cell = np.argmax(net_output)
         self.values[picked_cell//3][picked_cell%3] += 1
 
-    def calc_fitness(self):
+    def calc_fitness(self) -> float:
         if self.fitness_ is not None:
             return self.fitness_
 
