@@ -1,3 +1,4 @@
+import csv
 import random
 from typing import Optional
 
@@ -71,3 +72,16 @@ class GeneticAlgorithm:
     def pick_best_individuals(cls, individuals: list[CellField]) -> list[CellField]:
         # TODO
         pass
+
+    def save_population_result_to_csv(self, csv_filename):
+        individuals = self.population.individuals
+        rows = [individual.to_data_row() for individual in individuals]
+        rows.sort(key=lambda r: r[-1], reverse=True)
+        with open(csv_filename, 'w', newline='') as csvfile:
+            writter = csv.writer(csvfile, delimiter=',',
+                                quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            header_row = [f's{i}{j}' for i in range(3) for j in range(3)]
+            header_row.append('fitness')
+            writter.writerow(header_row)
+            for row in rows:
+                writter.writerow(row)
