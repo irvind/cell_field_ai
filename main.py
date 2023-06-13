@@ -2,14 +2,15 @@
 # https://www.pygame.org/docs/
 # https://pythonru.com/uroki/biblioteka-pygame-chast-1-vvedenie
 # https://stackoverflow.com/questions/20842801/how-to-display-text-in-pygame
+import csv
 import pygame
 
 from cellfield import GeneticAlgorithm, CellField, settings
 
-genetic_algo = GeneticAlgorithm()
-
 
 def run():
+    genetic_algo = GeneticAlgorithm()
+
     pygame.init()
     pygame.freetype.init()
 
@@ -50,5 +51,22 @@ def run_frame(screen: pygame.Surface, clock: pygame.time.Clock, field: CellField
     return True
 
 
+def run2():
+    genetic_algo = GeneticAlgorithm()
+    genetic_algo.init()
+    genetic_algo.simulate_current_population()
+
+    rows = []
+    individuals = genetic_algo.population.individuals
+    with open('simulation.csv', 'w', newline='') as csvfile:
+        writter = csv.writer(csvfile, delimiter=',',
+                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        header_row = [f's{i}{j}' for i in range(3) for j in range(3)]
+        header_row.append('fitness')
+        writter.writerow(header_row)
+        for individual in individuals:
+            writter.writerow(individual.to_data_row())
+
+
 if __name__ == '__main__':
-    run()
+    run2()

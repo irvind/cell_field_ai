@@ -16,7 +16,7 @@ class CellField:
         self.zero_color = zero_color
         self.nonzero_color = nonzero_color
         self.fitness_ = None
-        self.font = pygame.freetype.SysFont('freeserif', 100)
+        # self.font = pygame.freetype.SysFont('freeserif', 100)
         self.network = FeedForwardNetwork(input_num=9,
                                           hidden_layer_nums=[20, 12],
                                           output_num=9)
@@ -63,3 +63,11 @@ class CellField:
     def is_finished(self) -> bool:
         vals = np.array(self.values).flatten()
         return all(vals != 0) or any(vals > 9)
+
+    def to_data_row(self):
+        li = []
+        for r in self.values:
+            li.extend(r)
+        li.append(self.calc_fitness())
+
+        return tuple(li)

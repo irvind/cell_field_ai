@@ -43,6 +43,11 @@ class GeneticAlgorithm:
 
         self.cur_individual_idx += 1
 
+    def simulate_current_population(self) -> None:
+        for individual in self.population.individuals:
+            while not individual.is_finished():
+                individual.increment_next_cell()    
+
     def generate_next_population(self) -> None:
         individuals = self.population.individuals.copy()
         random.shuffle(individuals)
