@@ -4,9 +4,7 @@
 # https://stackoverflow.com/questions/20842801/how-to-display-text-in-pygame
 import pygame
 
-import settings
-from genetic import GeneticAlgorithm
-from cell_field import CellField
+from cellfield import GeneticAlgorithm, CellField, settings
 
 genetic_algo = GeneticAlgorithm()
 

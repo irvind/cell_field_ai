@@ -1,9 +1,9 @@
 import random
 from typing import Optional
 
-import settings
-from cell_field import CellField
-from errors import EndOfPoupulation
+from . import settings
+from .field import CellField
+from .errors import EndOfPoupulation
 
 
 class Population:

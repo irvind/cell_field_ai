@@ -1,6 +1,6 @@
 import numpy as np
 import pygame
-from nn import FeedForwardNetwork
+from .nn import FeedForwardNetwork
 
 
 class CellField:
