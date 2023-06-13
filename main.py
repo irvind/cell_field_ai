@@ -56,16 +56,17 @@ def run2():
     genetic_algo.init()
     genetic_algo.simulate_current_population()
 
-    rows = []
     individuals = genetic_algo.population.individuals
+    rows = [individual.to_data_row() for individual in individuals]
+    rows.sort(key=lambda r: r[-1], reverse=True)
     with open('simulation.csv', 'w', newline='') as csvfile:
         writter = csv.writer(csvfile, delimiter=',',
                              quotechar='"', quoting=csv.QUOTE_MINIMAL)
         header_row = [f's{i}{j}' for i in range(3) for j in range(3)]
         header_row.append('fitness')
         writter.writerow(header_row)
-        for individual in individuals:
-            writter.writerow(individual.to_data_row())
+        for row in rows:
+            writter.writerow(row)
 
 
 if __name__ == '__main__':
