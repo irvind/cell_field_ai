@@ -23,11 +23,11 @@ class FeedForwardNetwork:
         self.random_gen = np.random.default_rng(seed)
 
         if w_matrices:
-            self._init_random_weights()
-        else:
             assert self._is_input_matricies_valid(w_matrices, b_weights)
             self.w_matrices = w_matrices
             self.b_weights = b_weights
+        else:
+            self._init_random_weights()            
         self._assign_activation_funcs()
 
     def _init_random_weights(self) -> None:
