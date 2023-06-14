@@ -55,7 +55,7 @@ class GeneticAlgorithm:
 
         extended_population_size = settings.POPULATION_SIZE + settings.OFFSPRING_NUMBER
         while len(individuals) < extended_population_size:
-            # TODO: selection
+            ind1, ind2 = self.select_individuals(num=2)
             # TODO: crossover
             # TODO: mutation
             # TODO: clip
@@ -85,3 +85,19 @@ class GeneticAlgorithm:
             writter.writerow(header_row)
             for row in rows:
                 writter.writerow(row)
+
+    def select_individuals(self, num=2 ,tournament_size=2, allow_same=False) -> list[CellField]:
+        result = []
+        while True:
+            for _ in range(num):
+                pick = random.choices(self.population.individuals, k=tournament_size)
+                best_ind = max(pick, key=lambda v: v.fitness_)
+                result.append(best_ind)
+
+            if allow_same:
+                break
+            same_individuals = all(result[0] == item for item in result)
+            if not same_individuals:
+                break
+
+        return result
