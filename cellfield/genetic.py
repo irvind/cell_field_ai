@@ -1,10 +1,20 @@
 import csv
 import random
+from dataclasses import dataclass
 from typing import Optional
+
+import numpy as np
+from numpy.typing import ArrayLike
 
 from . import settings
 from .field import CellField
 from .errors import EndOfPoupulation
+
+
+@dataclass
+class NNMatrixData:
+    w_matrices: list[ArrayLike]
+    b_weights: list[ArrayLike]
 
 
 class Population:
@@ -56,7 +66,7 @@ class GeneticAlgorithm:
         extended_population_size = settings.POPULATION_SIZE + settings.OFFSPRING_NUMBER
         while len(individuals) < extended_population_size:
             ind1, ind2 = self.select_individuals(num=2)
-            # TODO: crossover
+            _, __ = self.crossover(ind1, ind2)
             # TODO: mutation
             # TODO: clip
             new_individuals = []
@@ -101,3 +111,28 @@ class GeneticAlgorithm:
                 break
 
         return result
+
+    def crossover(self, ind1: CellField, ind2: CellField) -> tuple[NNMatrixData, NNMatrixData]:
+        matr_count = len(ind1.network.w_matrices)
+        for i in range(len(matr_count)):
+            matr1 = ind1.network.w_matrices[i]
+            matr2 = ind2.network.w_matrices[i]
+            self._crossover_matrix(matr1, matr2)
+
+        # TODO
+
+    def _crossover_matrix(self, p_matr1: ArrayLike, p_matr2: ArrayLike) -> tuple[ArrayLike, ArrayLike]:
+        p_matr1_flat = p_matr1.flatten()
+        off_matr1_flat = p_matr1_flat.copy()
+        p_matr2_flat = p_matr2.flatten()
+        off_matr2_flat = p_matr2_flat.copy()
+        split_point = np.random.randint(0, len(p_matr1_flat))
+
+        off_matr1_flat[:split_point] = p_matr2_flat[:split_point]
+        off_matr2_flat[:split_point] = p_matr1_flat[:split_point]
+        
+        orig_shape = p_matr1.shape()
+        off_matr1 = off_matr1_flat.reshape(orig_shape)
+        off_matr2 = off_matr2_flat.reshape(orig_shape)
+
+        return off_matr1, off_matr2

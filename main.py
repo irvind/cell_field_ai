@@ -55,6 +55,7 @@ def run2():
     genetic_algo.init()
     genetic_algo.simulate_current_population()
     genetic_algo.save_population_result_to_csv('simulation.csv')
+    genetic_algo.generate_next_population()
 
 
 if __name__ == '__main__':
