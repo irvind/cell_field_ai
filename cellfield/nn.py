@@ -61,3 +61,7 @@ class FeedForwardNetwork:
                  else self.output_activation(z))
 
         return a
+
+    @property
+    def layer_count(self):
+        return 2 + len(self.w_matrices)

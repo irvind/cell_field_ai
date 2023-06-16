@@ -66,9 +66,16 @@ class GeneticAlgorithm:
         extended_population_size = settings.POPULATION_SIZE + settings.OFFSPRING_NUMBER
         while len(individuals) < extended_population_size:
             ind1, ind2 = self.select_individuals(num=2)
-            _, __ = self.crossover(ind1, ind2)
-            # TODO: mutation
-            # TODO: clip
+            for i in range(ind1.network.layer_count - 1):
+                ind1_matr = ind1.network.w_matrices[i]
+                ind2_matr = ind2.network.w_matrices[i]
+                ind1_crossover_matr, ind2_crossover_matr =\
+                    self.crossover(ind1_matr, ind2_matr)
+                ind1_mutate_matr, ind2_mutate_matr =\
+                    self.mutate(ind1_crossover_matr, ind2_crossover_matr)
+                # TODO: clip
+                # TODO: b vector
+
             new_individuals = []
             individuals.extend(new_individuals)
 
@@ -112,16 +119,7 @@ class GeneticAlgorithm:
 
         return result
 
-    def crossover(self, ind1: CellField, ind2: CellField) -> tuple[NNMatrixData, NNMatrixData]:
-        matr_count = len(ind1.network.w_matrices)
-        for i in range(len(matr_count)):
-            matr1 = ind1.network.w_matrices[i]
-            matr2 = ind2.network.w_matrices[i]
-            self._crossover_matrix(matr1, matr2)
-
-        # TODO
-
-    def _crossover_matrix(self, p_matr1: ArrayLike, p_matr2: ArrayLike) -> tuple[ArrayLike, ArrayLike]:
+    def crossover(self, p_matr1: ArrayLike, p_matr2: ArrayLike) -> tuple[ArrayLike, ArrayLike]:
         p_matr1_flat = p_matr1.flatten()
         off_matr1_flat = p_matr1_flat.copy()
         p_matr2_flat = p_matr2.flatten()
@@ -130,9 +128,13 @@ class GeneticAlgorithm:
 
         off_matr1_flat[:split_point] = p_matr2_flat[:split_point]
         off_matr2_flat[:split_point] = p_matr1_flat[:split_point]
-        
-        orig_shape = p_matr1.shape()
+
+        orig_shape = p_matr1.shape
         off_matr1 = off_matr1_flat.reshape(orig_shape)
         off_matr2 = off_matr2_flat.reshape(orig_shape)
 
+        return off_matr1, off_matr2
+
+    def mutate(self, off_matr1: ArrayLike, off_matr2: ArrayLike) -> tuple[ArrayLike, ArrayLike]:
+        # TODO
         return off_matr1, off_matr2
