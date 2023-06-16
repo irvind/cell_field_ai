@@ -71,8 +71,10 @@ class GeneticAlgorithm:
                 ind2_matr = ind2.network.w_matrices[i]
                 ind1_crossover_matr, ind2_crossover_matr =\
                     self.crossover(ind1_matr, ind2_matr)
-                ind1_mutate_matr, ind2_mutate_matr =\
-                    self.mutate(ind1_crossover_matr, ind2_crossover_matr)
+                ind1_mutate_matr = self.mutate(ind1_crossover_matr,
+                                               mutate_prob=settings.MUTATION_PROBABILITY)
+                ind2_mutate_matr = self.mutate(ind2_crossover_matr,
+                                               mutate_prob=settings.MUTATION_PROBABILITY)
                 # TODO: clip
                 # TODO: b vector
 
@@ -135,6 +137,11 @@ class GeneticAlgorithm:
 
         return off_matr1, off_matr2
 
-    def mutate(self, off_matr1: ArrayLike, off_matr2: ArrayLike) -> tuple[ArrayLike, ArrayLike]:
-        # TODO
-        return off_matr1, off_matr2
+    def mutate(self, off_matr: ArrayLike, mutate_prob: float) -> ArrayLike:
+        # TODO: check
+        off_matr = off_matr.copy()
+        mutation_flags = np.random.random(off_matr.shape) < mutate_prob
+        mutation_values = np.random.uniform(-1, 1, size=off_matr.shape)
+        off_matr[mutation_flags] = mutation_values[mutation_flags]
+
+        return off_matr
