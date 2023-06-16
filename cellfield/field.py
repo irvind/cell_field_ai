@@ -1,6 +1,7 @@
 import numpy as np
 import pygame
 from .nn import FeedForwardNetwork
+from . import settings
 
 
 class CellField:
@@ -18,7 +19,7 @@ class CellField:
         self.fitness_ = None
         # self.font = pygame.freetype.SysFont('freeserif', 100)
         self.network = FeedForwardNetwork(input_num=9,
-                                          hidden_layer_nums=[20, 12],
+                                          hidden_layer_nums=settings.HIDDEN_LAYERS,
                                           output_num=9)
 
     def draw(self, surface: pygame.Surface, offset: tuple[int, int]) -> None:
