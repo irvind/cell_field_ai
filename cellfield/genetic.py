@@ -56,8 +56,12 @@ class GeneticAlgorithm:
 
     def simulate_current_population(self) -> None:
         for individual in self.population.individuals:
-            while not individual.is_finished():
-                individual.increment_next_cell()    
+            self.simulate_individual(individual)
+
+    def simulate_individual(self, individual: CellField) -> None:
+        while not individual.is_finished():
+            individual.increment_next_cell()
+        individual.calc_fitness()
 
     def generate_next_population(self) -> None:
         individuals = self.population.individuals.copy()
@@ -65,27 +69,51 @@ class GeneticAlgorithm:
 
         extended_population_size = settings.POPULATION_SIZE + settings.OFFSPRING_NUMBER
         while len(individuals) < extended_population_size:
-            ind1, ind2 = self.select_individuals(num=2)
-            for i in range(ind1.network.layer_count - 1):
-                ind1_matr = ind1.network.w_matrices[i]
-                ind2_matr = ind2.network.w_matrices[i]
-                ind1_crossover_matr, ind2_crossover_matr =\
-                    self.crossover(ind1_matr, ind2_matr)
-                ind1_mutate_matr = self.mutate(ind1_crossover_matr,
-                                               mutate_prob=settings.MUTATION_PROBABILITY)
-                ind2_mutate_matr = self.mutate(ind2_crossover_matr,
-                                               mutate_prob=settings.MUTATION_PROBABILITY)
-                # TODO: clip
-                # TODO: b vector
-
-            new_individuals = []
-            individuals.extend(new_individuals)
+            individuals.extend(self._generate_new_individuals())
 
         individuals = self.pick_best_individuals(individuals)
 
         self.population = Population(individuals)
         self.phase += 1
         self.cur_individual_idx = 0
+
+    def _generate_new_individuals(self):
+        ind1_w_matricies, ind2_w_matricies = [], []
+        ind1_b_vecs, ind2_b_vecs = [], []
+        ind1, ind2 = self.select_individuals(self.population, num=2)
+        for i in range(ind1.network.layer_count - 1):
+            ind1_mutate_matr, ind1_mutate_b, ind2_mutate_matr, ind2_mutate_b =\
+                self._build_matricies(ind1, ind2, i)
+            ind1_w_matricies.append(ind1_mutate_matr)
+            ind1_b_vecs.append(ind1_mutate_b)
+            ind2_w_matricies.append(ind2_mutate_matr)
+            ind2_b_vecs.append(ind2_mutate_b)
+
+        new_individuals = (CellField(nn_w_matrices=ind1_w_matricies, nn_b_weights=ind1_b_vecs),
+                           CellField(nn_w_matrices=ind2_w_matricies, nn_b_weights=ind2_b_vecs))
+        return new_individuals
+
+    def _build_matricies(self, ind1: CellField, ind2: CellField, idx: int):
+        ind1_matr = ind1.network.w_matrices[idx]
+        ind2_matr = ind2.network.w_matrices[idx]
+
+        ind1_crossover_matr, ind2_crossover_matr =\
+            self.crossover(ind1_matr, ind2_matr)
+        ind1_mutate_matr = self.mutate(ind1_crossover_matr,
+                                        mutate_prob=settings.MUTATION_PROBABILITY)
+        ind2_mutate_matr = self.mutate(ind2_crossover_matr,
+                                        mutate_prob=settings.MUTATION_PROBABILITY)
+
+        ind1_b = ind1.network.b_weights[idx]
+        ind2_b = ind2.network.b_weights[idx]
+        ind1_crossover_b, ind2_crossover_b =\
+            self.crossover(ind1_b, ind2_b)
+        ind1_mutate_b = self.mutate(ind1_crossover_b,
+                                    mutate_prob=settings.MUTATION_PROBABILITY)
+        ind2_mutate_b = self.mutate(ind2_crossover_b,
+                                    mutate_prob=settings.MUTATION_PROBABILITY)
+
+        return (ind1_mutate_matr, ind1_mutate_b, ind2_mutate_matr, ind2_mutate_b)
 
     @classmethod
     def pick_best_individuals(cls, individuals: list[CellField]) -> list[CellField]:
@@ -105,11 +133,15 @@ class GeneticAlgorithm:
             for row in rows:
                 writter.writerow(row)
 
-    def select_individuals(self, num=2 ,tournament_size=2, allow_same=False) -> list[CellField]:
+    def select_individuals(self,
+                           population: Population,
+                           num: int = 2,
+                           tournament_size: int = 2,
+                           allow_same: bool = False) -> list[CellField]:
         result = []
         while True:
             for _ in range(num):
-                pick = random.choices(self.population.individuals, k=tournament_size)
+                pick = random.choices(population.individuals, k=tournament_size)
                 best_ind = max(pick, key=lambda v: v.fitness_)
                 result.append(best_ind)
 
@@ -138,7 +170,6 @@ class GeneticAlgorithm:
         return off_matr1, off_matr2
 
     def mutate(self, off_matr: ArrayLike, mutate_prob: float) -> ArrayLike:
-        # TODO: check
         off_matr = off_matr.copy()
         mutation_flags = np.random.random(off_matr.shape) < mutate_prob
         mutation_values = np.random.uniform(-1, 1, size=off_matr.shape)
