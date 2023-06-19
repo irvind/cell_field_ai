@@ -1,4 +1,7 @@
+from typing import Optional
 import numpy as np
+from numpy.typing import ArrayLike
+
 import pygame
 from .nn import FeedForwardNetwork
 from . import settings
@@ -9,7 +12,9 @@ class CellField:
                  cell_size: int = 100,
                  margin: int = 4,
                  zero_color: str = 'red',
-                 nonzero_color: str = 'green'):
+                 nonzero_color: str = 'green',
+                 nn_w_matrices: Optional[list[ArrayLike]] = None,
+                 nn_b_weights: Optional[list[ArrayLike]] = None):
         self.values = [[0 for _ in range(3)]
                        for _ in range(3)]
         self.cell_size = (cell_size, cell_size)
@@ -20,7 +25,9 @@ class CellField:
         # self.font = pygame.freetype.SysFont('freeserif', 100)
         self.network = FeedForwardNetwork(input_num=9,
                                           hidden_layer_nums=settings.HIDDEN_LAYERS,
-                                          output_num=9)
+                                          output_num=9,
+                                          w_matrices=nn_w_matrices,
+                                          b_weights=nn_b_weights)
 
     def draw(self, surface: pygame.Surface, offset: tuple[int, int]) -> None:
         for i in range(3):
