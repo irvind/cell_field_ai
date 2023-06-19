@@ -117,8 +117,9 @@ class GeneticAlgorithm:
 
     @classmethod
     def pick_best_individuals(cls, individuals: list[CellField]) -> list[CellField]:
-        # TODO
-        pass
+        individuals = individuals.copy()
+        individuals.sort(key=lambda v: v.fitness_, reverse=True)
+        return individuals[:settings.POPULATION_SIZE]
 
     def save_population_result_to_csv(self, csv_filename):
         individuals = self.population.individuals
