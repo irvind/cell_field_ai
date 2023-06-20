@@ -34,17 +34,33 @@ class FeedForwardNetwork:
         self.w_matrices = []
         self.b_weights = []
 
-        layers = [self.input_num]
-        layers.extend(self.hidden_layer_nums)
-        layers.append(self.output_num)
-
+        layers = self._get_layers_node_count()
         for i in range(1, len(layers)):
             self.w_matrices.append(self.random_gen.uniform(-1, 1, size=(layers[i-1], layers[i])))
             self.b_weights.append(self.random_gen.uniform(-1, 1, size=layers[i]))
 
     def _is_input_matricies_valid(self, w_matrices: list[ArrayLike], b_weights: list[ArrayLike]) -> bool:
-        # TODO
-        pass
+        if len(w_matrices) != len(b_weights):
+            return False
+
+        if len(w_matrices) != self.layer_count - 1:
+            return False
+
+        layers = self._get_layers_node_count()
+        for i in range(len(w_matrices)):
+            if w_matrices[i].shape != (layers[i], layers[i+1]):
+                return False
+            if b_weights[i].shape != (layers[i+1],):
+                return False
+
+        return True
+
+    def _get_layers_node_count(self) -> list[int]:
+        layers = [self.input_num]
+        layers.extend(self.hidden_layer_nums)
+        layers.append(self.output_num)
+
+        return layers
 
     def _assign_activation_funcs(self) -> None:
         func_map = {'relu': lambda v: np.maximum(0, v),
@@ -64,4 +80,4 @@ class FeedForwardNetwork:
 
     @property
     def layer_count(self):
-        return 2 + len(self.w_matrices)
+        return 2 + len(self.hidden_layer_nums)

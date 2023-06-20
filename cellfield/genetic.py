@@ -71,6 +71,9 @@ class GeneticAlgorithm:
         while len(individuals) < extended_population_size:
             individuals.extend(self._generate_new_individuals())
 
+        for individual in individuals:
+            self.simulate_individual(individual)
+
         individuals = self.pick_best_individuals(individuals)
 
         self.population = Population(individuals)
@@ -139,8 +142,8 @@ class GeneticAlgorithm:
                            num: int = 2,
                            tournament_size: int = 2,
                            allow_same: bool = False) -> list[CellField]:
-        result = []
         while True:
+            result = []
             for _ in range(num):
                 pick = random.choices(population.individuals, k=tournament_size)
                 best_ind = max(pick, key=lambda v: v.fitness_)
