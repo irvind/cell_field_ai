@@ -63,6 +63,9 @@ class CellField:
         vals[null_indices] = np.inf
         self.fitness_ = (1 / vals).sum()
 
+        if not any(null_indices):
+            self.fitness_ += 100
+
         return self.fitness_
 
     def get_number_of_turns(self) -> int:
