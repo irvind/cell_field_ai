@@ -1,5 +1,6 @@
 import csv
 import random
+from pprint import pprint
 from dataclasses import dataclass
 from typing import Optional
 
@@ -24,6 +25,11 @@ class Population:
     def spawn_initial_population(self) -> None:
         self.individuals = [CellField() for _ in range(settings.POPULATION_SIZE)]
 
+    def get_top_10_individual_data(self):
+        individuals = self.individuals.copy()
+        individuals.sort(key=lambda v: v.fitness_, reverse=True)
+        return [i.to_data_row() for i in individuals[:10]]
+
     def __getitem__(self, key):
         return self.individuals[key]
 
@@ -41,9 +47,20 @@ class GeneticAlgorithm:
     def init(self) -> None:
         self.population = Population()
         self.population.spawn_initial_population()
+        self.simulate_current_population()
 
         self.phase = 1
         self.cur_individual_idx = 0
+
+    def find_best_individual(self, iteration_count: int = 200) -> CellField:
+        for iter_idx in range(iteration_count):
+            self.generate_next_population()
+            print(f'iter_idx: {iter_idx}')
+            pprint(self.population.get_top_10_individual_data())
+
+        individuals = self.population.individuals.copy()
+        individuals.sort(key=lambda v: v.fitness_, reverse=True)
+        return individuals[0]
 
     def get_current_individual(self) -> Population:
         return self.population[self.cur_individual_idx]

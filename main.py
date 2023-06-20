@@ -58,5 +58,11 @@ def run2():
     genetic_algo.generate_next_population()
 
 
+def run3():
+    genetic_algo = GeneticAlgorithm()
+    genetic_algo.init()
+    best_individual = genetic_algo.find_best_individual(iteration_count=2000)
+
+
 if __name__ == '__main__':
-    run2()
+    run3()
