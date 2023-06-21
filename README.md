@@ -2,7 +2,7 @@
 
 Cell Field AI is an example of a genetic algorithm implementation. The algorithm finds best solution among the population.
 
-## What is cell field?
+## What is a cell field?
 
 TODO
 
