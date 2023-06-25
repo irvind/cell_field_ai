@@ -12,8 +12,8 @@ The feedforward neural net is used to increment the value of the cell field cell
 
 ## Dependencies
 
-* Python >= 3.9
-* Numpy == 1.24.3
+* Python >= 3
+* Numpy
 
 ## Getting started
 
