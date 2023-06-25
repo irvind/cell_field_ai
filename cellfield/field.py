@@ -2,7 +2,6 @@ from typing import Optional
 import numpy as np
 from numpy.typing import ArrayLike
 
-import pygame
 from .nn import FeedForwardNetwork
 from . import settings
 
@@ -22,26 +21,11 @@ class CellField:
         self.zero_color = zero_color
         self.nonzero_color = nonzero_color
         self.fitness_ = None
-        # self.font = pygame.freetype.SysFont('freeserif', 100)
         self.network = FeedForwardNetwork(input_num=9,
                                           hidden_layer_nums=settings.HIDDEN_LAYERS,
                                           output_num=9,
                                           w_matrices=nn_w_matrices,
                                           b_weights=nn_b_weights)
-
-    def draw(self, surface: pygame.Surface, offset: tuple[int, int]) -> None:
-        for i in range(3):
-            for j in range(3):
-                cell_offset = (offset[0] + j * (self.cell_size[0] + self.margin),
-                               offset[1] + i * (self.cell_size[1] + self.margin))
-                rect = pygame.Rect(cell_offset,
-                                   self.cell_size)
-                cell_color = self.zero_color if self.values[i][j] == 0 else self.nonzero_color
-                pygame.draw.rect(surface, cell_color, rect)
-
-                text_offset = (cell_offset[0] + 30, cell_offset[1] + 15)
-                text_surface, _ = self.font.render(str(self.values[i][j]), (0, 0, 0))
-                surface.blit(text_surface, text_offset)
 
     def increment_next_cell(self) -> None:
         inputs = []
