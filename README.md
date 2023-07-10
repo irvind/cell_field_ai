@@ -8,13 +8,13 @@ The cell field is a 3x3 integer matrix, each cell of which contains value betwee
 
 ## How does it work?
 
-The feedforward neural net is used to increment the value of the cell field cells by 1. The network has 9 inputs (values of the field cells) and 9 outputs indicating which cell should be incremented next. A simulation of the cell field continues until all cells have value greater than 0, or if value of single cell becomes greater or equal to 10.
+The feedforward neural net is used to increment the value of the field cells by 1. The network has 9 inputs (values of the field cells) and 9 outputs indicating which cell should be incremented next. A simulation of the cell field continues until all cells have value greater than 0, or if value of single cell becomes greater or equal to 10. The algorithm finds best neural net configuration that selects fewest amount of cells for incrementation and also fills the field completely.
 
 ## Dependencies
 
 * Python >= 3
 * Numpy
 
-## Getting started
+## How to start the algorithm
 
-TODO
+    python main.py
